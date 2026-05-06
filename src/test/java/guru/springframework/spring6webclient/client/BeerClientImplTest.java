@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest
 class BeerClientImplTest {
@@ -13,7 +15,30 @@ class BeerClientImplTest {
     BeerClient client;
 
     @Test
+    void testGetMap() {
+
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+        client.listBeerMap().subscribe(response -> {
+            System.out.println(response);
+            atomicBoolean.set(true);
+        });
+
+        await().untilTrue(atomicBoolean);
+    }
+
+    @Test
     void listBeer() {
-        client.listBeers().subscribe(response -> System.out.println(response));
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+
+
+        client.listBeer().subscribe(response -> {
+            System.out.println(response);
+            atomicBoolean.set(true);
+
+        });
+        await().untilTrue(atomicBoolean);
+
     }
 }
